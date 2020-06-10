@@ -1,4 +1,4 @@
-module github.com/mrasband/ps4
+module github.com/BenoitBotton/ps4
 
 go 1.13
 
