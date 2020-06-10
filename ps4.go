@@ -28,7 +28,9 @@ type Input struct {
 
 func Discover() ([]*Input, error) {
 	// "Sony Interactive Entertainment" is only if wired
-	controllerRegex := regexp.MustCompile("(?:Sony Interactive Entertainment )?Wireless Controller")
+	// controllerRegex := regexp.MustCompile("(?:Sony Interactive Entertainment )?Wireless Controller")
+	// Logitech Logitech Dual Action
+	controllerRegex := regexp.MustCompile("Logitech Logitech Dual Action")
 
 	candidates, err := ev.ListInputDevices("/dev/input/event*")
 	if err != nil {
@@ -116,7 +118,7 @@ type KeyState uint8
 //go:generate stringer -type=KeyState
 
 const (
-	KeyUp   KeyState = iota
+	KeyUp KeyState = iota
 	KeyDown
 )
 
@@ -180,7 +182,7 @@ func Watch(ctx context.Context, input *Input) (<-chan interface{}, error) {
 			select {
 			case <-ctx.Done():
 				return
-			case events <-e:
+			case events <- e:
 			default:
 			}
 		}
