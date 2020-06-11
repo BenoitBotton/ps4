@@ -29,7 +29,7 @@ type Input struct {
 func Discover() ([]*Input, error) {
 	// "Sony Interactive Entertainment" is only if wired
 	// controllerRegex := regexp.MustCompile("(?:Sony Interactive Entertainment )?Wireless Controller")
-	// Logitech Logitech Dual Action
+
 	controllerRegex := regexp.MustCompile("Logitech Logitech Dual Action")
 
 	candidates, err := ev.ListInputDevices("/dev/input/event*")
@@ -104,13 +104,6 @@ const (
 	Circle   Button = 305
 	X        Button = 304
 	Square   Button = 308
-
-	// trackpad TODO
-	//TrackpadX
-	//TrackpadY
-	//TrackpadClick
-
-	// motion TODO
 )
 
 type KeyState uint8
@@ -129,7 +122,7 @@ type KeyEvent struct {
 	State  KeyState
 }
 
-// AbsEvent is an absolute value report (joysticks, lower triggers, or the d-pad - surprisingly)
+// AbsEvent is an absolute value report
 type AbsEvent struct {
 	Event  *ev.InputEvent
 	Button Button
@@ -143,6 +136,10 @@ func Watch(ctx context.Context, input *Input) (<-chan interface{}, error) {
 		defer close(events)
 		dev := input.Device
 
+		fmt.Println(dev)
+		fmt.Println(dev.Capabilities)
+		// fmt.Println(dev.ResolveCapabilities())
+
 		fmt.Println("Running watcher...")
 		for {
 			event, err := dev.ReadOne()
@@ -154,7 +151,7 @@ func Watch(ctx context.Context, input *Input) (<-chan interface{}, error) {
 			if event.Type == 0 {
 				continue
 			}
-
+			fmt.Printf("event Type %d Code %d Value %d\n\n", event.Type, event.Code, event.Value)
 			var e interface{}
 			switch event.Type {
 			case ev.EV_KEY:
